@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABC PLACE - Avaliação de Riscos Cibernéticos 2026</title>
+<style>
+  :root {
+    --red: #c0392b;
+    --orange: #e67e22;
+    --yellow: #f39c12;
+    --green: #27ae60;
+    --dark: #1a1a2e;
+    --mid: #16213e;
+    --accent: #0f3460;
+    --highlight: #e94560;
+    --text: #eaeaea;
+    --subtext: #a0a0b0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark); color: var(--text); }
+
+  /* Slide container */
+  .slide {
+    min-height: 100vh;
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: 3px solid var(--highlight);
+    page-break-after: always;
+  }
+  .slide-cover {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+  }
+  .slide-bg-dark { background: var(--dark); }
+  .slide-bg-mid  { background: var(--mid); }
+  .slide-bg-accent { background: var(--accent); }
+
+  /* Typography */
+  .tag { font-size: 12px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--highlight); margin-bottom: 10px; }
+  h1 { font-size: 52px; font-weight: 800; line-height: 1.1; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 30px; border-left: 5px solid var(--highlight); padding-left: 18px; }
+  h3 { font-size: 22px; font-weight: 600; margin-bottom: 12px; }
+  p, li { font-size: 17px; line-height: 1.7; color: var(--subtext); }
+  strong { color: var(--text); }
+  .subtitle { font-size: 22px; color: var(--subtext); max-width: 700px; }
+  .meta { font-size: 14px; color: var(--subtext); margin-top: 30px; }
+
+  /* Grid layouts */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; }
+
+  /* Cards */
+  .card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .card-red    { border-left: 4px solid var(--red); }
+  .card-orange { border-left: 4px solid var(--orange); }
+  .card-yellow { border-left: 4px solid var(--yellow); }
+  .card-green  { border-left: 4px solid var(--green); }
+
+  /* Risk badge */
+  .badge {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .badge-extremo  { background: #c0392b33; color: #ff6b6b; border: 1px solid #c0392b; }
+  .badge-alto     { background: #e67e2233; color: #ffab76; border: 1px solid #e67e22; }
+  .badge-moderado { background: #f39c1233; color: #ffe08a; border: 1px solid #f39c12; }
+  .badge-baixo    { background: #27ae6033; color: #77dd77; border: 1px solid #27ae60; }
+
+  /* Risk table */
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { background: rgba(233,69,96,0.2); color: var(--highlight); padding: 12px 16px; text-align: left; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; font-size: 12px; }
+  td { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.03); }
+  .score { font-weight: 800; font-size: 20px; }
+  .score-extremo  { color: #ff6b6b; }
+  .score-alto     { color: #ffab76; }
+  .score-moderado { color: #ffe08a; }
+
+  /* Impact chain */
+  .chain { display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+  .chain-item { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); padding: 12px 18px; border-radius: 8px; font-size: 15px; }
+  .chain-arrow { color: var(--highlight); font-size: 22px; padding: 0 8px; }
+
+  /* Priority list */
+  .priority-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    margin-bottom: 14px;
+    border-left: 4px solid var(--highlight);
+  }
+  .priority-num { font-size: 32px; font-weight: 900; color: var(--highlight); min-width: 40px; }
+  .priority-content h3 { font-size: 18px; margin-bottom: 6px; }
+  .priority-content p { font-size: 14px; }
+
+  /* Stat box */
+  .stat-box { text-align: center; padding: 30px 20px; }
+  .stat-num { font-size: 64px; font-weight: 900; line-height: 1; }
+  .stat-label { font-size: 15px; color: var(--subtext); margin-top: 8px; }
+
+  /* Timeline */
+  .timeline-item { display: flex; gap: 20px; margin-bottom: 24px; }
+  .timeline-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--highlight); margin-top: 5px; flex-shrink: 0; }
+  .timeline-line { width: 2px; background: rgba(233,69,96,0.3); margin: 19px 0 0 6px; height: calc(100% - 19px); position: absolute; }
+
+  /* Divider */
+  .divider { height: 2px; background: linear-gradient(to right, var(--highlight), transparent); margin: 24px 0; }
+
+  /* Page number */
+  .page-num { position: fixed; bottom: 20px; right: 40px; font-size: 12px; color: var(--subtext); }
+
+  @media print {
+    .slide { page-break-after: always; min-height: 100vh; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== SLIDE 1: CAPA ===== -->
+<div class="slide slide-cover">
+  <div class="tag">Confidencial &bull; Avaliação de Segurança &bull; 2026</div>
+  <h1 style="font-size:58px; background: linear-gradient(90deg,#fff,#e94560); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
+    Riscos Cibernéticos<br>ABC PLACE
+  </h1>
+  <p class="subtitle">Análise de Ameaças, Vulnerabilidades e Plano de Mitigação<br>para o Processo de Migração Cloud</p>
+  <div class="meta">
+    Elaborado por: Equipe de Segurança da Informação &nbsp;|&nbsp; Data: 30/03/2026 &nbsp;|&nbsp; Versão: 1.0
+  </div>
+</div>
+
+<!-- ===== SLIDE 2: CONTEXTO ===== -->
+<div class="slide slide-bg-mid">
+  <div class="tag">Contexto</div>
+  <h2>Cenário Atual da ABC PLACE</h2>
+  <div class="grid-2" style="gap:40px; align-items:start;">
+    <div>
+      <h3 style="margin-bottom:16px;">Sobre a empresa</h3>
+      <ul style="list-style:none; display:flex; flex-direction:column; gap:14px;">
+        <li><strong>Fundada em 2012</strong> &mdash; e-commerce consolidado no mercado nacional</li>
+        <li><strong>+100 colaboradores</strong> em sede com centro de distribuição</li>
+        <li><strong>Plataforma WooCommerce</strong> desde a fundação, configurada por ex-funcionário</li>
+        <li><strong>Equipe de TI</strong> formada há 2 anos, focada em suporte interno</li>
+        <li><strong>Migração para cloud</strong> em andamento &mdash; prioridade estratégica</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="margin-bottom:16px;">Por que esta avaliação?</h3>
+      <div class="card card-red">
+        <p style="margin-bottom:14px;">Incidentes passados minaram a <strong>confiança dos diretores</strong> na equipe de TI.</p>
+        <p style="margin-bottom:14px;">O presidente solicitou uma <strong>avaliação aprofundada dos riscos cibernéticos</strong> antes da migração cloud.</p>
+        <p>A migração cloud <strong>amplia a superfície de ataque</strong> e exige maturidade de segurança que ainda não existe na empresa.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 3: VULNERABILIDADES IDENTIFICADAS ===== -->
+<div class="slide slide-bg-dark">
+  <div class="tag">Diagnóstico</div>
+  <h2>Vulnerabilidades Identificadas</h2>
+  <div class="grid-2" style="gap:20px;">
+    <div class="card card-red">
+      <h3>1. Ausência de Hardening</h3>
+      <p>Dispositivos de rede e servidores mantêm <strong>configurações padrão</strong> de fábrica, incluindo senhas default e serviços desnecessários ativos.</p>
+    </div>
+    <div class="card card-red">
+      <h3>2. Contas Privilegiadas Compartilhadas</h3>
+      <p>Equipe de TI usa <strong>usuários 'administrator' e 'root'</strong> sem individualização, sem MFA e sem princípio do menor privilégio.</p>
+    </div>
+    <div class="card card-red">
+      <h3>3. Sem Gestão de Vulnerabilidades</h3>
+      <p><strong>Nenhuma política</strong> de atualização, patch management ou análise periódica do estado da rede.</p>
+    </div>
+    <div class="card card-red">
+      <h3>4. Acesso Remoto Inseguro</h3>
+      <p>Acesso administrativo aos servidores <strong>sem VPN</strong>, expondo credenciais e tráfego em canais não criptografados.</p>
+    </div>
+    <div class="card card-red">
+      <h3>5. Sem Firewall e WAF</h3>
+      <p><strong>Ausência de proteção de perímetro</strong>: sem firewall configurado e sem Web Application Firewall para a plataforma de e-commerce.</p>
+    </div>
+    <div class="card card-red">
+      <h3>6. App e BD no Mesmo Servidor</h3>
+      <p>Plataforma WooCommerce e banco de dados <strong>compartilham o mesmo servidor</strong>, eliminando qualquer segmentação de rede.</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:20px; border-left:4px solid var(--red);">
+    <strong>7. Sem Monitoramento de Segurança &mdash;</strong>
+    <span style="color:var(--subtext)"> Inexistência de SIEM, IDS/IPS ou qualquer ferramenta para detectar ataques em andamento.</span>
+  </div>
+</div>
+
+<!-- ===== SLIDE 4: AMEAÇAS IDENTIFICADAS ===== -->
+<div class="slide slide-bg-mid">
+  <div class="tag">Ameaças</div>
+  <h2>Ameaças ao Ambiente da ABC PLACE</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Ameaça</th>
+        <th>Vetor de Ataque</th>
+        <th>Impacto Principal</th>
+        <th>Risco</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>Ransomware / Malware</strong></td>
+        <td>Email malicioso, exploração de serviços sem patch</td>
+        <td>Indisponibilidade total; perda de dados; resgate</td>
+        <td><span class="badge badge-extremo">Extremo</span></td>
+        <td class="score score-extremo">16</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>Injeção de Código (SQLi/XSS)</strong></td>
+        <td>Requisições web maliciosas à plataforma WooCommerce</td>
+        <td>Vazamento de dados de clientes; comprometimento do BD</td>
+        <td><span class="badge badge-extremo">Extremo</span></td>
+        <td class="score score-extremo">16</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>Acesso por Credenciais Padrão</strong></td>
+        <td>Brute force ou uso de credenciais default conhecidas</td>
+        <td>Controle total da infraestrutura por atacante</td>
+        <td><span class="badge badge-extremo">Extremo</span></td>
+        <td class="score score-extremo">16</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>DoS / DDoS</strong></td>
+        <td>Inundação de requisições à plataforma de vendas</td>
+        <td>Plataforma offline; perda de receita; dano reputacional</td>
+        <td><span class="badge badge-extremo">Extremo</span></td>
+        <td class="score score-extremo">16</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>Ameaça Interna (Insider)</strong></td>
+        <td>Abuso de privilégios root/administrator</td>
+        <td>Destruição ou exfiltração de dados; backdoors</td>
+        <td><span class="badge badge-extremo">Extremo</span></td>
+        <td class="score score-extremo">12</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><strong>Comprometimento de Informações</strong></td>
+        <td>Exploração do BD exposto; acesso não autorizado</td>
+        <td>Violação da LGPD; multas; processos judiciais</td>
+        <td><span class="badge badge-extremo">Extremo</span></td>
+        <td class="score score-extremo">12</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td><strong>Eavesdropping / MITM</strong></td>
+        <td>Interceptação de tráfego sem VPN</td>
+        <td>Roubo de credenciais, CPF, dados de cartões</td>
+        <td><span class="badge badge-extremo">Extremo</span></td>
+        <td class="score score-extremo">12</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td><strong>Persistência Não Detectada</strong></td>
+        <td>Atacante permanece na rede sem detecção</td>
+        <td>Comprometimento progressivo de toda a infraestrutura</td>
+        <td><span class="badge badge-extremo">Extremo</span></td>
+        <td class="score score-extremo">12</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ===== SLIDE 5: IMPACTO NA CADEIA DE VALOR ===== -->
+<div class="slide slide-bg-dark">
+  <div class="tag">Impacto no Negócio</div>
+  <h2>Como os Riscos Afetam a Cadeia de Valor</h2>
+  <div class="grid-2" style="gap:30px; margin-bottom:30px;">
+    <div>
+      <h3 style="color:#ff6b6b; margin-bottom:16px;">Impacto Financeiro Direto</h3>
+      <ul style="list-style:none; display:flex; flex-direction:column; gap:10px;">
+        <li>&#9654; <strong>Perda de receita</strong> durante indisponibilidade da plataforma de vendas</li>
+        <li>&#9654; <strong>Custos de resposta</strong> a incidentes: forense digital, recuperação de dados</li>
+        <li>&#9654; <strong>Pagamento de resgate</strong> em ataques ransomware (média: R$ 500k&ndash;5M)</li>
+        <li>&#9654; <strong>Multas LGPD</strong>: até 2% do faturamento, limitado a R$ 50M por infração</li>
+        <li>&#9654; <strong>Indenizações</strong> a clientes afetados por vazamento de dados</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="color:#ffab76; margin-bottom:16px;">Impacto Reputacional e Operacional</h3>
+      <ul style="list-style:none; display:flex; flex-direction:column; gap:10px;">
+        <li>&#9654; <strong>Perda de confiança</strong> de clientes após vazamento de dados</li>
+        <li>&#9654; <strong>Cobertura negativa</strong> na mídia especializada e redes sociais</li>
+        <li>&#9654; <strong>Abandono de carrinho</strong> e queda nas conversões pós-incidente</li>
+        <li>&#9654; <strong>Interrupção da migração cloud</strong> &mdash; impacto direto na estratégia</li>
+        <li>&#9654; <strong>Paralisação operacional</strong> do centro de distribuição</li>
+      </ul>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <h3 style="margin-bottom:18px;">Cadeia de Impacto: Ataque SQLi como Exemplo</h3>
+  <div class="chain">
+    <div class="chain-item">Requisição<br>maliciosa</div>
+    <div class="chain-arrow">&#8594;</div>
+    <div class="chain-item">WooCommerce<br>sem WAF</div>
+    <div class="chain-arrow">&#8594;</div>
+    <div class="chain-item">BD no<br>mesmo servidor</div>
+    <div class="chain-arrow">&#8594;</div>
+    <div class="chain-item">Dump de 100%<br>dos dados</div>
+    <div class="chain-arrow">&#8594;</div>
+    <div class="chain-item">LGPD +<br>Reputação</div>
+    <div class="chain-arrow">&#8594;</div>
+    <div class="chain-item" style="border-color:#ff6b6b;">Crise<br>Empresarial</div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 6: MATRIZ DE RISCO ===== -->
+<div class="slide slide-bg-mid">
+  <div class="tag">Matriz de Risco</div>
+  <h2>Classificação por Probabilidade &times; Impacto</h2>
+  <div style="overflow-x:auto;">
+    <table style="min-width:700px;">
+      <thead>
+        <tr>
+          <th>Ameaça</th>
+          <th style="text-align:center;">Probabilidade</th>
+          <th style="text-align:center;">Impacto</th>
+          <th style="text-align:center;">Score</th>
+          <th style="text-align:center;">Classificação</th>
+          <th>Responsável</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Ransomware / Malware</strong></td>
+          <td style="text-align:center;">4 &mdash; Quase Certa</td>
+          <td style="text-align:center;">4 &mdash; Catastrófica</td>
+          <td style="text-align:center;" class="score score-extremo">16</td>
+          <td style="text-align:center;"><span class="badge badge-extremo">Extremo</span></td>
+          <td>TI / CISO</td>
+        </tr>
+        <tr>
+          <td><strong>Injeção de Código (SQLi/XSS)</strong></td>
+          <td style="text-align:center;">4 &mdash; Quase Certa</td>
+          <td style="text-align:center;">4 &mdash; Catastrófica</td>
+          <td style="text-align:center;" class="score score-extremo">16</td>
+          <td style="text-align:center;"><span class="badge badge-extremo">Extremo</span></td>
+          <td>TI / Dev</td>
+        </tr>
+        <tr>
+          <td><strong>Credenciais Padrão / Brute Force</strong></td>
+          <td style="text-align:center;">4 &mdash; Quase Certa</td>
+          <td style="text-align:center;">4 &mdash; Catastrófica</td>
+          <td style="text-align:center;" class="score score-extremo">16</td>
+          <td style="text-align:center;"><span class="badge badge-extremo">Extremo</span></td>
+          <td>TI</td>
+        </tr>
+        <tr>
+          <td><strong>DoS / DDoS</strong></td>
+          <td style="text-align:center;">4 &mdash; Quase Certa</td>
+          <td style="text-align:center;">4 &mdash; Catastrófica</td>
+          <td style="text-align:center;" class="score score-extremo">16</td>
+          <td style="text-align:center;"><span class="badge badge-extremo">Extremo</span></td>
+          <td>TI / NOC</td>
+        </tr>
+        <tr>
+          <td><strong>Ameaça Interna (Insider)</strong></td>
+          <td style="text-align:center;">3 &mdash; Provável</td>
+          <td style="text-align:center;">4 &mdash; Catastrófica</td>
+          <td style="text-align:center;" class="score score-extremo">12</td>
+          <td style="text-align:center;"><span class="badge badge-extremo">Extremo</span></td>
+          <td>RH / TI</td>
+        </tr>
+        <tr>
+          <td><strong>Comprometimento de Informações</strong></td>
+          <td style="text-align:center;">3 &mdash; Provável</td>
+          <td style="text-align:center;">4 &mdash; Catastrófica</td>
+          <td style="text-align:center;" class="score score-extremo">12</td>
+          <td style="text-align:center;"><span class="badge badge-extremo">Extremo</span></td>
+          <td>TI / Jurídico</td>
+        </tr>
+        <tr>
+          <td><strong>Eavesdropping / MITM</strong></td>
+          <td style="text-align:center;">3 &mdash; Provável</td>
+          <td style="text-align:center;">4 &mdash; Catastrófica</td>
+          <td style="text-align:center;" class="score score-extremo">12</td>
+          <td style="text-align:center;"><span class="badge badge-extremo">Extremo</span></td>
+          <td>TI</td>
+        </tr>
+        <tr>
+          <td><strong>Persistência Não Detectada</strong></td>
+          <td style="text-align:center;">4 &mdash; Quase Certa</td>
+          <td style="text-align:center;">3 &mdash; Alta</td>
+          <td style="text-align:center;" class="score score-extremo">12</td>
+          <td style="text-align:center;"><span class="badge badge-extremo">Extremo</span></td>
+          <td>TI / SOC</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="display:flex; gap:20px; margin-top:24px;">
+    <div style="display:flex; align-items:center; gap:8px;"><span class="badge badge-extremo">Extremo</span><span style="font-size:13px;color:var(--subtext)">&gt; 9 &mdash; Risco inaceitável, ação imediata</span></div>
+    <div style="display:flex; align-items:center; gap:8px;"><span class="badge badge-alto">Alto</span><span style="font-size:13px;color:var(--subtext)">7&ndash;9 &mdash; Geralmente inaceitável</span></div>
+    <div style="display:flex; align-items:center; gap:8px;"><span class="badge badge-moderado">Moderado</span><span style="font-size:13px;color:var(--subtext)">3&ndash;6 &mdash; Possivelmente aceitável</span></div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 7: PLANO DE AÇÃO - CURTO PRAZO ===== -->
+<div class="slide slide-bg-dark">
+  <div class="tag">Plano de Ação &mdash; Curto Prazo (0&ndash;30 dias)</div>
+  <h2>Ações Imediatas &mdash; Alta Prioridade</h2>
+
+  <div class="priority-item">
+    <div class="priority-num">1</div>
+    <div class="priority-content">
+      <h3>Alterar todas as credenciais padrão</h3>
+      <p>Trocar imediatamente senhas default de todos os dispositivos de rede, servidores e sistemas. Implementar política de senhas fortes (m&iacute;n. 12 caracteres, complexidade). <strong>Responsável: TI &mdash; Prazo: 3 dias</strong></p>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">2</div>
+    <div class="priority-content">
+      <h3>Implantar VPN para acesso remoto</h3>
+      <p>Nenhum acesso administrativo deve ocorrer fora de VPN. Desabilitar acesso SSH/RDP direto da internet. <strong>Responsável: TI &mdash; Prazo: 5 dias</strong></p>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">3</div>
+    <div class="priority-content">
+      <h3>Ativar WAF e firewall de perímetro</h3>
+      <p>Implementar WAF (ex: Cloudflare, AWS WAF) na frente da plataforma WooCommerce. Configurar regras de firewall bloqueando tráfego não essencial. <strong>Responsável: TI &mdash; Prazo: 7 dias</strong></p>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">4</div>
+    <div class="priority-content">
+      <h3>Criar contas individuais e habilitar MFA</h3>
+      <p>Desabilitar uso de root/administrator compartilhado. Criar contas individuais com MFA obrigatório para toda a equipe de TI. <strong>Responsável: TI / RH &mdash; Prazo: 7 dias</strong></p>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">5</div>
+    <div class="priority-content">
+      <h3>Backup completo e testado dos dados críticos</h3>
+      <p>Realizar backup imediato de todos os dados e validar a restauração. Definir política de backup (diário, offsite, criptografado). <strong>Responsável: TI &mdash; Prazo: 5 dias</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 8: PLANO DE AÇÃO - MÉDIO PRAZO ===== -->
+<div class="slide slide-bg-mid">
+  <div class="tag">Plano de Ação &mdash; Médio Prazo (30&ndash;90 dias)</div>
+  <h2>Ações de Estruturação e Controle</h2>
+  <div class="grid-2" style="gap:20px;">
+    <div class="card card-orange">
+      <h3>Separar Aplicação e Banco de Dados</h3>
+      <p>Migrar o SGBD para servidor dedicado, com acesso restrito apenas ao servidor de aplicação via rede privada. Eliminar exposição direta do banco de dados.</p>
+      <p style="margin-top:10px;"><strong>Responsável: TI / Dev &nbsp;|&nbsp; Prazo: 30 dias</strong></p>
+    </div>
+    <div class="card card-orange">
+      <h3>Hardening de Servidores</h3>
+      <p>Aplicar benchmark CIS nos servidores: desabilitar serviços desnecessários, configurar controle de acesso, ativar logs de auditoria, instalar EDR/antivírus corporativo.</p>
+      <p style="margin-top:10px;"><strong>Responsável: TI &nbsp;|&nbsp; Prazo: 45 dias</strong></p>
+    </div>
+    <div class="card card-orange">
+      <h3>Implantação de Monitoramento (SIEM/IDS)</h3>
+      <p>Implementar solução de monitoramento centralizado (SIEM), IDS/IPS e alertas em tempo real. Criar processo de resposta a incidentes.</p>
+      <p style="margin-top:10px;"><strong>Responsável: TI / SOC &nbsp;|&nbsp; Prazo: 60 dias</strong></p>
+    </div>
+    <div class="card card-orange">
+      <h3>Gestão de Vulnerabilidades</h3>
+      <p>Implementar processo de patch management. Realizar primeiro pentest da plataforma WooCommerce. Criar calendário de scans periódicos de vulnerabilidade.</p>
+      <p style="margin-top:10px;"><strong>Responsável: TI &nbsp;|&nbsp; Prazo: 60 dias</strong></p>
+    </div>
+    <div class="card card-orange">
+      <h3>Política de Segurança da Informação</h3>
+      <p>Elaborar e aprovar PSI com regras de acesso, classificação de dados, uso aceitável e tratamento de incidentes. Alinhar com LGPD.</p>
+      <p style="margin-top:10px;"><strong>Responsável: TI / Jurídico &nbsp;|&nbsp; Prazo: 60 dias</strong></p>
+    </div>
+    <div class="card card-orange">
+      <h3>Treinamento e Conscientização</h3>
+      <p>Programa de conscientização em segurança para todos os colaboradores: phishing, engenharia social, senhas seguras e notificação de incidentes.</p>
+      <p style="margin-top:10px;"><strong>Responsável: RH / TI &nbsp;|&nbsp; Prazo: 90 dias</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 9: PLANO DE AÇÃO - LONGO PRAZO ===== -->
+<div class="slide slide-bg-dark">
+  <div class="tag">Plano de Ação &mdash; Longo Prazo (90+ dias)</div>
+  <h2>Maturidade e Consolidação da Segurança</h2>
+  <div class="grid-3" style="gap:20px;">
+    <div class="card card-green">
+      <h3 style="margin-bottom:10px;">Framework de Segurança</h3>
+      <p>Adotar referências como NIST CSF ou ISO 27001. Estabelecer programa contínuo de gestão de riscos com ciclos de revisão trimestrais.</p>
+    </div>
+    <div class="card card-green">
+      <h3 style="margin-bottom:10px;">Pentest Anual</h3>
+      <p>Contratar empresa especializada para realizar testes de penetração externos e internos pelo menos uma vez por ano.</p>
+    </div>
+    <div class="card card-green">
+      <h3 style="margin-bottom:10px;">PAM &mdash; Gestão de Acessos Privilegiados</h3>
+      <p>Implantar solução PAM (CyberArk, BeyondTrust ou similar) para controle total sobre contas administrativas e auditoria de comandos.</p>
+    </div>
+    <div class="card card-green">
+      <h3 style="margin-bottom:10px;">Conformidade LGPD</h3>
+      <p>Nomear DPO (Data Protection Officer), implementar processos de gestão de consentimento, mapeamento de dados pessoais e notificação de incidentes à ANPD.</p>
+    </div>
+    <div class="card card-green">
+      <h3 style="margin-bottom:10px;">Segurança na Cloud</h3>
+      <p>Aplicar princípios de segurança cloud-native (Zero Trust, IAM, CSPM) no ambiente migrado. Realizar revisão de arquitetura com foco em segurança.</p>
+    </div>
+    <div class="card card-green">
+      <h3 style="margin-bottom:10px;">Cultura de Segurança</h3>
+      <p>Estabelecer programa contínuo de treinamentos, simulações de phishing e métricas de maturidade de segurança para toda a organização.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 10: ROADMAP ===== -->
+<div class="slide slide-bg-mid">
+  <div class="tag">Roadmap</div>
+  <h2>Cronograma de Implementação</h2>
+  <div style="display:flex; flex-direction:column; gap:0;">
+
+    <div style="display:flex; gap:0; margin-bottom:20px;">
+      <div style="width:180px; flex-shrink:0; padding:16px; background:rgba(233,69,96,0.15); border-radius:8px 0 0 8px; border:1px solid var(--highlight); display:flex; flex-direction:column; justify-content:center;">
+        <div style="font-size:12px; color:var(--highlight); font-weight:700; text-transform:uppercase;">Fase 1</div>
+        <div style="font-weight:800; font-size:18px;">0 &mdash; 30 dias</div>
+        <div style="font-size:13px; color:var(--subtext);">Emergência</div>
+      </div>
+      <div style="flex:1; padding:16px 24px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-left:none; border-radius:0 8px 8px 0;">
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+          <span style="background:rgba(233,69,96,0.2); padding:5px 12px; border-radius:4px; font-size:13px;">Trocar credenciais default</span>
+          <span style="background:rgba(233,69,96,0.2); padding:5px 12px; border-radius:4px; font-size:13px;">Implantar VPN</span>
+          <span style="background:rgba(233,69,96,0.2); padding:5px 12px; border-radius:4px; font-size:13px;">Ativar WAF + Firewall</span>
+          <span style="background:rgba(233,69,96,0.2); padding:5px 12px; border-radius:4px; font-size:13px;">MFA para equipe TI</span>
+          <span style="background:rgba(233,69,96,0.2); padding:5px 12px; border-radius:4px; font-size:13px;">Backup e restauração</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:0; margin-bottom:20px;">
+      <div style="width:180px; flex-shrink:0; padding:16px; background:rgba(230,126,34,0.15); border-radius:8px 0 0 8px; border:1px solid var(--orange); display:flex; flex-direction:column; justify-content:center;">
+        <div style="font-size:12px; color:var(--orange); font-weight:700; text-transform:uppercase;">Fase 2</div>
+        <div style="font-weight:800; font-size:18px;">30 &mdash; 90 dias</div>
+        <div style="font-size:13px; color:var(--subtext);">Estruturação</div>
+      </div>
+      <div style="flex:1; padding:16px 24px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-left:none; border-radius:0 8px 8px 0;">
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+          <span style="background:rgba(230,126,34,0.2); padding:5px 12px; border-radius:4px; font-size:13px;">Separar App e BD</span>
+          <span style="background:rgba(230,126,34,0.2); padding:5px 12px; border-radius:4px; font-size:13px;">Hardening servidores</span>
+          <span style="background:rgba(230,126,34,0.2); padding:5px 12px; border-radius:4px; font-size:13px;">SIEM / IDS implantado</span>
+          <span style="background:rgba(230,126,34,0.2); padding:5px 12px; border-radius:4px; font-size:13px;">Patch management</span>
+          <span style="background:rgba(230,126,34,0.2); padding:5px 12px; border-radius:4px; font-size:13px;">PSI aprovada</span>
+          <span style="background:rgba(230,126,34,0.2); padding:5px 12px; border-radius:4px; font-size:13px;">Treinamento equipe</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:0;">
+      <div style="width:180px; flex-shrink:0; padding:16px; background:rgba(39,174,96,0.15); border-radius:8px 0 0 8px; border:1px solid var(--green); display:flex; flex-direction:column; justify-content:center;">
+        <div style="font-size:12px; color:var(--green); font-weight:700; text-transform:uppercase;">Fase 3</div>
+        <div style="font-weight:800; font-size:18px;">90+ dias</div>
+        <div style="font-size:13px; color:var(--subtext);">Maturidade</div>
+      </div>
+      <div style="flex:1; padding:16px 24px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-left:none; border-radius:0 8px 8px 0;">
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+          <span style="background:rgba(39,174,96,0.2); padding:5px 12px; border-radius:4px; font-size:13px;">ISO 27001 / NIST CSF</span>
+          <span style="background:rgba(39,174,96,0.2); padding:5px 12px; border-radius:4px; font-size:13px;">Pentest anual</span>
+          <span style="background:rgba(39,174,96,0.2); padding:5px 12px; border-radius:4px; font-size:13px;">PAM implantado</span>
+          <span style="background:rgba(39,174,96,0.2); padding:5px 12px; border-radius:4px; font-size:13px;">Conformidade LGPD</span>
+          <span style="background:rgba(39,174,96,0.2); padding:5px 12px; border-radius:4px; font-size:13px;">Segurança cloud-native</span>
+          <span style="background:rgba(39,174,96,0.2); padding:5px 12px; border-radius:4px; font-size:13px;">Programa de cultura</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 11: RESUMO EXECUTIVO ===== -->
+<div class="slide slide-bg-dark">
+  <div class="tag">Resumo Executivo</div>
+  <h2>Situação Atual e Próximos Passos</h2>
+  <div class="grid-4" style="margin-bottom:36px;">
+    <div class="stat-box card">
+      <div class="stat-num" style="color:#ff6b6b;">8</div>
+      <div class="stat-label">Ameaças ativas identificadas</div>
+    </div>
+    <div class="stat-box card">
+      <div class="stat-num" style="color:#ff6b6b;">7</div>
+      <div class="stat-label">Vulnerabilidades críticas</div>
+    </div>
+    <div class="stat-box card">
+      <div class="stat-num" style="color:#ff6b6b;">100%</div>
+      <div class="stat-label">Riscos classificados como Extremo</div>
+    </div>
+    <div class="stat-box card">
+      <div class="stat-num" style="color:#27ae60;">5</div>
+      <div class="stat-label">Ações imediatas (próximos 7 dias)</div>
+    </div>
+  </div>
+  <div class="card" style="border-left:4px solid var(--highlight); margin-bottom:20px;">
+    <h3 style="margin-bottom:12px;">Conclusão</h3>
+    <p>O ambiente atual da ABC PLACE apresenta <strong>nível de exposição cibernética extremamente alto</strong>. Todas as 8 ameaças avaliadas foram classificadas como risco <strong>Extremo</strong> (score &gt; 9), indicando que um incidente grave é provável de ocorrer antes ou durante a migração cloud se nenhuma ação for tomada.</p>
+  </div>
+  <div class="card" style="border-left:4px solid var(--green);">
+    <h3 style="margin-bottom:12px;">Recomendação ao Presidente e Comitê Executivo</h3>
+    <p>Aprovação <strong>imediata</strong> de orçamento e recursos para as <strong>5 ações emergenciais</strong> (Fase 1). A migração cloud não deve prosseguir sem a execução completa da Fase 1. A Fase 2 deve ser um pré-requisito formal para a entrada em produção no ambiente cloud. O investimento em segurança agora é significativamente menor do que o custo de um incidente.</p>
+  </div>
+</div>
+
+<!-- ===== SLIDE 12: ENCERRAMENTO ===== -->
+<div class="slide slide-cover">
+  <div class="tag">Confidencial &bull; Avaliação de Segurança &bull; 2026</div>
+  <h1 style="font-size:44px; background: linear-gradient(90deg,#fff,#e94560); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
+    A Segurança é um<br>Investimento Estratégico
+  </h1>
+  <p class="subtitle" style="max-width:600px;">
+    Proteger os dados da ABC PLACE é proteger a confiança dos clientes,<br>
+    a continuidade dos negócios e a reputação construída em mais de 12 anos.
+  </p>
+  <div class="divider" style="width:400px; margin:30px auto;"></div>
+  <p class="meta">
+    Dúvidas e próximos passos &mdash; Equipe de Segurança da Informação<br>
+    ABC PLACE &nbsp;&bull;&nbsp; 30/03/2026 &nbsp;&bull;&nbsp; CONFIDENCIAL
+  </p>
+</div>
+
+</body>
+</html>
